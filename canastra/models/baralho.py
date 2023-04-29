@@ -13,11 +13,9 @@ class Baralho:
                 self.cartas.append(carta)
         random.shuffle(self.cartas)
 
-
     @property
     def n_cartas(self):
         return len(self.cartas)
-
 
     def compra_carta(self):
         return self.cartas.pop()

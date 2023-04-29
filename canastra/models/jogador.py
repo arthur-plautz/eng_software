@@ -1,40 +1,56 @@
-import tkinter as tk
-from models.mesa import Mesa
+from models.mesa_jogador import MesaJogador
+from models.sequencia import Sequencia
 
 class Jogador:
-    def __init__(self, master, nome_jogador, oponente):
+    def __init__(self, master, nome, visivel=True):
         self.master = master
-        self.nome_jogador = nome_jogador
-        self.oponente = oponente
-        self.tela_inicial()
+        self.nome = nome
 
-    def inicia_partida(self):
-        self.frame.destroy()
-        self.oponente.inicia_partida()
-        self.mesa = Mesa(self.master, self.nome_jogador)
+        self.mesa = MesaJogador(master, nome, visivel)
 
-    def tela_inicial(self):
-        self.frame = tk.Frame(self.master)
-        self.frame.pack()
+    @property
+    def mao(self):
+        return self._mao
 
-        self.canvas = tk.Canvas(self.frame, width=1500, height=900)
-        self.canvas.pack()
+    @property
+    def sequencias(self):
+        return self._sequencias
 
-        label = tk.Label(self.canvas, text="Canastra", font="Arial 40")
-        label.pack()
-
-        self.partida_button = tk.Button(self.canvas, text="Iniciar Partida", command=self.inicia_partida)
-        self.partida_button.pack()
-
-        self.sair_button = tk.Button(self.canvas, text="Sair", command=self.master.destroy)
-        self.sair_button.pack()
-
-class Fake:
-    def __init__(self, master, nome_jogador):
-        self.master = master
-        self.nome_jogador = nome_jogador
+    def inicia_partida(self, lixo, baralho):
+        self._lixo = lixo
+        self._baralho = baralho
+        self._mao = self.mesa.mao
+        self._sequencias = self.mesa.sequencias
     
-    def inicia_partida(self):
-        self.mesa = Mesa(self.master, self.nome_jogador, principal=False)
+        self.inicia_mao()
+        self.mesa.inicia_interface()
 
+    def inicia_mao(self):
+        for i in range(11):
+            carta = self._baralho.compra_carta()
+            self.mesa.mao.adiciona_carta(carta)
 
+    def atualiza_acao(self):
+        self.mesa.destroy_popup()
+        self.mesa.atualiza_interface()
+
+    def comprar_carta(self):
+        carta = self._baralho.compra_carta()
+        self._mao.adiciona_carta(carta)
+        self.atualiza_acao()
+
+    def baixar_cartas(self):
+        cartas = []
+        for i in range(3):
+            cartas.append(self._mao.remove_carta())
+        sequencia = Sequencia(cartas)
+        self._sequencias.append(sequencia)
+        self.atualiza_acao()
+
+    def descartar_carta(self):
+        carta = self._mao.remove_carta()
+        self._lixo.adiciona_carta(carta)
+        self.atualiza_acao()
+
+    def verifica_sequencia(self, sequencia):
+        pass
