@@ -4,13 +4,14 @@ from models.baralho import Baralho
 from tkinter import *
 
 class MesaJogo(Mesa):
-    def __init__(self, master,):
+    def __init__(self, master):
         super().__init__(
             master=master,
             height=200,
             width=1600
         )
 
+    def inicia_partida(self):
         self.baralho = Baralho(2)
         self.lixo = Lixo()
 

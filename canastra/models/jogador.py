@@ -19,16 +19,19 @@ class Jogador:
     def inicia_partida(self, lixo, baralho):
         self._lixo = lixo
         self._baralho = baralho
-        self._mao = self.mesa.mao
-        self._sequencias = self.mesa.sequencias
     
-        self.inicia_mao()
-        self.mesa.inicia_interface()
+        cartas_mao = self.inicia_mao()
+        self.mesa.inicia_partida(cartas_mao)
+
+        self._sequencias = self.mesa.sequencias
+        self._mao = self.mesa.mao
 
     def inicia_mao(self):
+        cartas = []
         for i in range(11):
             carta = self._baralho.compra_carta()
-            self.mesa.mao.adiciona_carta(carta)
+            cartas.append(carta)
+        return cartas
 
     def atualiza_acao(self):
         self.mesa.destroy_popup()

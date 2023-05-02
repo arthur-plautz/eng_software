@@ -1,7 +1,7 @@
 
 class Mao:
-    def __init__(self) -> None:
-        self.cartas = []
+    def __init__(self, cartas) -> None:
+        self.cartas = cartas if cartas else []
 
     @property
     def n_cartas(self):

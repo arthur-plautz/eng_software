@@ -13,8 +13,10 @@ class MesaJogador(Mesa):
         self.jogador = jogador
         self.visivel = visivel
 
+    def inicia_partida(self, mao):
         self.sequencias = []
-        self.mao = Mao()
+        self.mao = Mao(mao)
+        self.inicia_interface()
 
     def inicia_interface(self):
         self._inicia_interface()
