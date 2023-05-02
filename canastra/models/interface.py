@@ -53,9 +53,9 @@ class Interface(PyNetgamesServerListener):
         self.game_frame.destroy()
 
         self.mesa.inicia_partida()
-        self.jogador2.inicia_partida(self.mesa.lixo, self.mesa.baralho)
+        self.jogador2.inicia_partida(self.mesa)
         self.mesa.inicia_interface()
-        self.jogador1.inicia_partida(self.mesa.lixo, self.mesa.baralho)
+        self.jogador1.inicia_partida(self.mesa)
 
         self.altera_turno()
         self.menu.inicia_interface()

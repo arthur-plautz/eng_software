@@ -16,9 +16,10 @@ class Jogador:
     def sequencias(self):
         return self._sequencias
 
-    def inicia_partida(self, lixo, baralho):
-        self._lixo = lixo
-        self._baralho = baralho
+    def inicia_partida(self, mesa_centro):
+        self._mesa_centro = mesa_centro
+        self._lixo = self._mesa_centro.lixo
+        self._baralho = self._mesa_centro.baralho
     
         cartas_mao = self.inicia_mao()
         self.mesa.inicia_partida(cartas_mao)
@@ -36,6 +37,7 @@ class Jogador:
     def atualiza_acao(self):
         self.mesa.destroy_popup()
         self.mesa.atualiza_interface()
+        self._mesa_centro.atualiza_interface()
 
     def comprar_carta(self):
         carta = self._baralho.compra_carta()
