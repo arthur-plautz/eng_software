@@ -15,15 +15,17 @@ class Interface(PyNetgamesServerListener):
         self.master.title("Canastra")
         self.master.geometry(f"{self.width}x{self.height}")
         self.master.resizable(False, False)
+        self._frame_jogo = None
 
-        self.game_frame = None
         self.turno_local = None
+        self.inicio_turno = None
+        self.partida_andamento = False
 
-        self.jogador1 = Jogador(self.master, "Jogador 1")
-        self.jogador2 = Jogador(self.master, "Jogador 2", visivel=False)
-        
+        self.jogador = Jogador("Jogador")
+        self.oponente = Jogador("Oponente")
+    
         self.mesa = MesaJogo(self.master)
-        self.menu = MenuJogo(self.master, width=self.width, height=self.height)
+        self.menu = MenuJogo(self.master, self.jogador, width=self.width, height=self.height)
 
         self.tela_inicial()
 
@@ -33,47 +35,75 @@ class Interface(PyNetgamesServerListener):
 
         self.master.mainloop()
 
+    def obter_estado(self):
+        estado_jogador = self.jogador.obter_estado()
+        estado_oponente = self.oponente.obter_estado()
+        return dict(
+            partida_andamento=self.partida_andamento,
+            monte=self.mesa.monte,
+            lixo=self.mesa.lixo,
+            jogador=estado_jogador,
+            oponente=estado_oponente
+        )
+
+    def atualizar_estado(self, estado):
+        self.atualizar_interface()
+
+    def enviar_jogada(self):
+        messagebox.showinfo(message='Turno do oponente')
+        self.alterar_turno()
+        estado = self.obter_estado()
+        self.server_proxy.send_move(
+            match=self.match_id,
+            payload=estado
+        )
+
     def tela_inicial(self):
-        if self.game_frame: self.game_frame.destroy()
+        if self._frame_jogo: self._frame_jogo.destroy()
 
-        self.game_frame = Frame(self.master)
-        self.game_frame.pack()
-        self.game_canvas = Canvas(self.game_frame, width=self.width, height=self.height)
-        self.game_canvas.pack()
+        self._frame_jogo = Frame(self.master)
+        self._frame_jogo.pack()
+        self._canvas_jogo = Canvas(self._frame_jogo, width=self.width, height=self.height)
+        self._canvas_jogo.pack()
 
-        label = Label(self.game_canvas, text="Canastra", font="Arial 40")
-        self.partida_button = Button(self.game_canvas, text="Iniciar Partida", command=self.send_match)
-        self.sair_button = Button(self.game_canvas, text="Sair", command=self.master.destroy)
+        label = Label(self._canvas_jogo, text="Canastra", font="Arial 40")
+        partida_button = Button(self._canvas_jogo, text="Iniciar Partida", command=self.send_match)
+        sair_button = Button(self._canvas_jogo, text="Sair", command=self.master.destroy)
 
         label.pack()
-        self.partida_button.pack()
-        self.sair_button.pack()
+        partida_button.pack()
+        sair_button.pack()
 
-    def inicia_partida(self):
-        self.game_frame.destroy()
+    def iniciar_partida(self):
+        self._frame_jogo.destroy()
 
-        self.mesa.inicia_partida()
-        self.jogador2.inicia_partida(self.mesa)
-        self.mesa.inicia_interface()
-        self.jogador1.inicia_partida(self.mesa)
+        self.mesa.iniciar_partida()
+        self.oponente.iniciar_partida(self.master, self.mesa, visivel=False)
+        self.mesa.iniciar_interface()
+        self.jogador.iniciar_partida(self.master, self.mesa)
+        self.menu.iniciar_interface()
 
-        self.altera_turno()
-        self.menu.inicia_interface()
+        self.jogador.finalizar = self.enviar_jogada
 
-    def altera_turno(self):
+    def alterar_turno(self):
         if self.turno_local:
             self.turno_local = False
-            self.menu.atualiza_jogador(self.jogador2)
         else:
             self.turno_local = True
-            self.menu.atualiza_jogador(self.jogador2)
+            self.alterar_fase_turno()
 
-    def atualiza_mesas(self):
+    def alterar_fase_turno(self):
+        if self.inicio_turno:
+            self.inicio_turno = False
+        else:
+            self.inicio_turno = True
+
+    def atualizar_interface(self):
         self.mesa_canvas.delete(ALL)
 
-        self.mesa.atualiza_interface()
-        self.jogador2.mesa.atualiza_interface()
-        self.jogador1.mesa.atualiza_interface()
+        self.mesa.atualizar_interface()
+        self.oponente.mesa.atualizar_interface()
+        self.jogador.mesa.atualizar_interface()
 
     def set_match_id(self, match_id):
         self.match_id = match_id
@@ -103,9 +133,12 @@ class Interface(PyNetgamesServerListener):
         messagebox.showinfo(message='Notificação de erro do servidor. Feche o programa.') 
 
     def receive_match(self, match):# Pyng use case "receive match"
-        messagebox.showinfo(message='Partida iniciada') 
+        messagebox.showinfo(message='Partida iniciada')
         self.set_match_id(match.match_id)
-        self.inicia_partida()
+        self.iniciar_partida()
+        self.alterar_turno()
 
     def receive_move(self, move):# Pyng use case "receive move"
-        received_move = move.payload
+        estado = move.payload
+        self.atualizar_estado(estado)
+        self.alterar_turno()

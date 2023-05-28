@@ -6,16 +6,16 @@ class Mesa:
         self.height = height
         self.width = width
 
-    def _inicia_interface(self):
-        self.frame = Frame(self.master)
-        self.frame.pack()
+    def _iniciar_interface(self):
+        self._frame = Frame(self.master)
+        self._frame.pack()
 
-        self.canvas_mesa = Canvas(self.frame, width=self.width, height=self.height, bg="green")
-        self.canvas_mesa.pack(side='left')
+        self._canvas_mesa = Canvas(self._frame, width=self.width, height=self.height, bg="green")
+        self._canvas_mesa.pack(side='left')
 
-    def cria_popup(self):
+    def criar_popup(self):
         self._popup = Toplevel(self.master)
         return self._popup
 
-    def destroy_popup(self):
+    def destruir_popup(self):
         self._popup.destroy()

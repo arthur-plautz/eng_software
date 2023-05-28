@@ -2,7 +2,7 @@ import random
 from models.carta import Carta
 
 
-class Baralho:
+class Monte:
     def __init__(self, qtd=1):
         self.cartas = []
         naipes = ["Hearts", "Diamonds", "Clubs", "Spades"]
@@ -17,5 +17,5 @@ class Baralho:
     def n_cartas(self):
         return len(self.cartas)
 
-    def compra_carta(self):
+    def comprar_carta(self):
         return self.cartas.pop()

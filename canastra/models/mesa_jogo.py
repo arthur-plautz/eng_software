@@ -1,6 +1,6 @@
 from models.mesa import Mesa
 from models.lixo import Lixo
-from models.baralho import Baralho
+from models.monte import Monte
 from tkinter import *
 
 class MesaJogo(Mesa):
@@ -11,26 +11,26 @@ class MesaJogo(Mesa):
             width=1600
         )
 
-    def inicia_partida(self):
-        self.baralho = Baralho(2)
+    def iniciar_partida(self):
+        self.monte = Monte(2)
         self.lixo = Lixo()
 
-    def inicia_interface(self):
-        self._inicia_interface()
-        self.atualiza_interface()
+    def iniciar_interface(self):
+        self._iniciar_interface()
+        self.atualizar_interface()
 
-    def atualiza_interface(self):
-        self.canvas_mesa.delete(ALL)
+    def atualizar_interface(self):
+        self._canvas_mesa.delete(ALL)
 
         # Lixo
         x_lixo, y_lixo = self.width - 300, 30
         if self.lixo.n_cartas > 0:
             carta_lixo = self.lixo.cartas[0]
-            self.canvas_mesa.create_image(x_lixo, y_lixo, anchor=NW, image=carta_lixo.photo)
-        self.canvas_mesa.create_text(x_lixo, y_lixo-20, anchor=NW, text=f"Lixo: {self.lixo.n_cartas}")
+            self._canvas_mesa.create_image(x_lixo, y_lixo, anchor=NW, image=carta_lixo.photo)
+        self._canvas_mesa.create_text(x_lixo, y_lixo-20, anchor=NW, text=f"Lixo: {self.lixo.n_cartas}")
 
         # Monte
-        x_baralho, y_baralho = self.width - 400, 30
-        carta_baralho = self.baralho.cartas[-1]
-        self.canvas_mesa.create_image(x_baralho, y_baralho, anchor=NW, image=carta_baralho.photo)
-        self.canvas_mesa.create_text(x_baralho, y_baralho-20, anchor=NW, text=f"Monte: {self.baralho.n_cartas}")
+        x_monte, y_monte = self.width - 400, 30
+        carta_monte = self.monte.cartas[-1]
+        self._canvas_mesa.create_image(x_monte, y_monte, anchor=NW, image=carta_monte.photo)
+        self._canvas_mesa.create_text(x_monte, y_monte-20, anchor=NW, text=f"Monte: {self.monte.n_cartas}")

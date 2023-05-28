@@ -1,33 +1,31 @@
 from tkinter import *
 
 class MenuJogo:
-    def __init__(self, master, width, height) -> None:
+    def __init__(self, master, jogador, width, height) -> None:
+        self.jogador = jogador
         self.master = master
         self.height = height
         self.width = width
 
-    def atualiza_jogador(self, jogador):
-        self.jogador = jogador
+    def iniciar_interface(self):
+        self._canvas = Canvas(self.master, width=self.width, height=self.height, bg="white")
+        self._canvas.pack()
 
-    def inicia_interface(self):
-        self.canvas = Canvas(self.master, width=self.width, height=self.height, bg="white")
-        self.canvas.pack()
+        self.atualizar_interface()
 
-        self.atualiza_interface()
-
-    def atualiza_interface(self):
-        self.botao_compra = Button(self.canvas, text="Comprar", command=self.comprar)
+    def atualizar_interface(self):
+        self.botao_compra = Button(self._canvas, text="Comprar", command=self.comprar)
         self.botao_compra.pack(side='right')
-        self.botao_baixa = Button(self.canvas, text="Baixar", command=self.baixar)
+        self.botao_baixa = Button(self._canvas, text="Baixar", command=self.baixar)
         self.botao_baixa.pack(side='right')
-        self.botao_descarta = Button(self.canvas, text="Descartar", command=self.descartar)
+        self.botao_descarta = Button(self._canvas, text="Descartar", command=self.descartar)
         self.botao_descarta.pack(side='right')
 
-        self.botao_sair = Button(self.canvas, text="Sair", command=self.master.destroy)
+        self.botao_sair = Button(self._canvas, text="Sair", command=self.master.destroy)
         self.botao_sair.pack(side="left")
 
     def comprar(self):
-        popup = self.jogador.mesa.cria_popup()
+        popup = self.jogador.mesa.criar_popup()
 
         label = Label(popup, text="Escolha uma opção de compra")
         monte_button = Button(popup, text="Monte", command=self.jogador.comprar_carta)
@@ -39,7 +37,7 @@ class MenuJogo:
         lixo_button.grid(row=1, column=2, padx=5, pady=5, sticky="e")
 
     def baixar(self):
-        popup = self.jogador.mesa.cria_popup()
+        popup = self.jogador.mesa.criar_popup()
 
         # Selecionar Cartas
         carta_label = Label(popup, text="Selecione as cartas a serem baixadas")
@@ -63,7 +61,7 @@ class MenuJogo:
         baixar_button.grid(row=4, column=0, padx=5, pady=5, sticky="w")
 
     def descartar(self):
-        popup = self.jogador.mesa.cria_popup()
+        popup = self.jogador.mesa.criar_popup()
 
         # Selecionar Cartas
         label = Label(popup, text="Selecione as cartas a serem baixadas")
