@@ -5,7 +5,7 @@ from models.carta import Carta
 class Monte:
     def __init__(self, qtd=1):
         self.cartas = []
-        naipes = ["Hearts", "Diamonds", "Clubs", "Spades"]
+        naipes = ["Copas", "Ouros", "Paus", "Espadas"]
         valores = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] * qtd
         for naipe in naipes:
             for valor in valores:

@@ -1,4 +1,4 @@
 
-from models.interface import Interface
+from models.interface import InterfaceJogador
 
-game = Interface()
+game = InterfaceJogador()

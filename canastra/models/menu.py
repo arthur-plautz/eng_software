@@ -7,7 +7,7 @@ class MenuJogo:
         self.height = height
         self.width = width
 
-    def iniciar_interface(self):
+    def inicializar_interface(self):
         self._canvas = Canvas(self.master, width=self.width, height=self.height, bg="white")
         self._canvas.pack()
 
@@ -64,8 +64,8 @@ class MenuJogo:
         popup = self.jogador.mesa.criar_popup()
 
         # Selecionar Cartas
-        label = Label(popup, text="Selecione as cartas a serem baixadas")
-        cartas_listbox = Listbox(popup, selectmode=MULTIPLE)
+        label = Label(popup, text="Selecione carta a ser descartada")
+        cartas_listbox = Listbox(popup, selectmode=SINGLE)
         for carta in self.jogador.mao.cartas:
             cartas_listbox.insert(END, f"{carta.valor} - {carta.naipe}")
         descartar_button = Button(popup, text="Descartar Cartas", command=self.jogador.descartar_carta)

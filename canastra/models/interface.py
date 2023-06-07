@@ -6,7 +6,7 @@ from tkinter import messagebox
 from py_netgames_client.tkinter_client.PyNetgamesServerProxy import PyNetgamesServerProxy
 from py_netgames_client.tkinter_client.PyNetgamesServerListener import PyNetgamesServerListener
 
-class Interface(PyNetgamesServerListener):
+class InterfaceJogador(PyNetgamesServerListener):
     def __init__(self):
         self.width = 1600
         self.height = 1200
@@ -24,8 +24,8 @@ class Interface(PyNetgamesServerListener):
         self.jogador = Jogador("Jogador")
         self.oponente = Jogador("Oponente")
     
-        self.mesa = MesaJogo(self.master)
-        self.menu = MenuJogo(self.master, self.jogador, width=self.width, height=self.height)
+        self.mesa_jogo = MesaJogo(self.master)
+        self.menu_jogo = MenuJogo(self.master, self.jogador, width=self.width, height=self.height)
 
         self.tela_inicial()
 
@@ -40,8 +40,8 @@ class Interface(PyNetgamesServerListener):
         estado_oponente = self.oponente.obter_estado()
         return dict(
             partida_andamento=self.partida_andamento,
-            monte=self.mesa.monte,
-            lixo=self.mesa.lixo,
+            monte=self.mesa_jogo.monte,
+            lixo=self.mesa_jogo.lixo,
             jogador=estado_jogador,
             oponente=estado_oponente
         )
@@ -74,16 +74,33 @@ class Interface(PyNetgamesServerListener):
         partida_button.pack()
         sair_button.pack()
 
-    def iniciar_partida(self):
+    def definir_turno_inicial(self):
+        pass
+
+    def definir_estado_inicial(self):
+        if self.turno_local:
+            mao = 11
+            monte = 2
+        else:
+            mao = 0
+            monte = 0
+        return mao, monte
+
+    def inicializar_interface(self):
         self._frame_jogo.destroy()
 
-        self.mesa.iniciar_partida()
-        self.oponente.iniciar_partida(self.master, self.mesa, visivel=False)
-        self.mesa.iniciar_interface()
-        self.jogador.iniciar_partida(self.master, self.mesa)
-        self.menu.iniciar_interface()
+        self.oponente.inicializar_interface(self.master, self.mesa_jogo, visivel=False)
+        self.mesa_jogo.inicializar_interface()
+        self.jogador.inicializar_interface(self.master, self.mesa_jogo)
+        self.menu_jogo.inicializar_interface()
 
-        self.jogador.finalizar = self.enviar_jogada
+        self.jogador.finalizar_turno = self.enviar_jogada
+
+    def finalizar_partida(self):
+        self.partida_andamento = False
+
+        self.jogador.calcular_pontuacao()
+        self.oponente.calcular_pontuacao()
 
     def alterar_turno(self):
         if self.turno_local:
@@ -99,9 +116,9 @@ class Interface(PyNetgamesServerListener):
             self.inicio_turno = True
 
     def atualizar_interface(self):
-        self.mesa_canvas.delete(ALL)
+        self.mesa_jogo_canvas.delete(ALL)
 
-        self.mesa.atualizar_interface()
+        self.mesa_jogo.atualizar_interface()
         self.oponente.mesa.atualizar_interface()
         self.jogador.mesa.atualizar_interface()
 
@@ -119,6 +136,7 @@ class Interface(PyNetgamesServerListener):
         self.server_proxy.send_connect(self.server_url)
 
     def send_match(self, amount_of_players=2):# Pyng use case "send match"
+        messagebox.showinfo(message='Aguardando outro jogador')
         self.server_proxy.send_match(amount_of_players)
 
     def receive_connection_success(self):# Pyng use case "receive connection"
@@ -135,8 +153,21 @@ class Interface(PyNetgamesServerListener):
     def receive_match(self, match):# Pyng use case "receive match"
         messagebox.showinfo(message='Partida iniciada')
         self.set_match_id(match.match_id)
-        self.iniciar_partida()
-        self.alterar_turno()
+        self.partida_andamento = True
+
+        turno_inicial = self.definir_turno_inicial()
+        if not turno_inicial:
+            self.turno_local = False
+            messagebox.showinfo(message='Turno do Oponente')
+        else:
+            self.alterar_turno()
+
+        mao, monte = self.definir_estado_inicial()
+        self.mesa_jogo.iniciar_partida(monte)
+        self.oponente.iniciar_partida(mao)
+        self.jogador.iniciar_partida(mao)
+
+        self.inicializar_interface()
 
     def receive_move(self, move):# Pyng use case "receive move"
         estado = move.payload

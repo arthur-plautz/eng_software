@@ -11,12 +11,12 @@ class MesaJogo(Mesa):
             width=1600
         )
 
-    def iniciar_partida(self):
-        self.monte = Monte(2)
+    def iniciar_partida(self, monte):
         self.lixo = Lixo()
+        self.monte = Monte(monte)
 
-    def iniciar_interface(self):
-        self._iniciar_interface()
+    def inicializar_interface(self):
+        self._inicializar_interface()
         self.atualizar_interface()
 
     def atualizar_interface(self):

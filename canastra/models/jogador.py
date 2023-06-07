@@ -8,27 +8,21 @@ class Jogador:
         self.mao = None
         self.sequencias = None
 
-    def finalizar_turno(self):
-        pass
+    def iniciar_partida(self, mao):
+        cartas = []
+        for i in range(mao):
+            carta = self._monte.comprar_carta()
+            cartas.append(carta)
+        self.mesa.iniciar_partida(cartas)
 
-    def iniciar_partida(self, master, mesa_jogo, visivel=True):
+    def inicializar_interface(self, master, mesa_jogo, visivel=True):
         self.mesa = MesaJogador(master, self.nome, visivel)
         self._mesa_jogo = mesa_jogo
         self._lixo = self._mesa_jogo.lixo
         self._monte = self._mesa_jogo.monte
-
-        cartas_mao = self.iniciar_mao()
-        self.mesa.iniciar_partida(cartas_mao)
-
         self.mao = self.mesa.mao
         self.sequencias = self.mesa.sequencias
-
-    def iniciar_mao(self):
-        cartas = []
-        for i in range(11):
-            carta = self._monte.comprar_carta()
-            cartas.append(carta)
-        return cartas
+        self.mesa.inicializar_interface()
 
     def _atualizar_interface(self):
         self.mesa.destruir_popup()
@@ -37,7 +31,11 @@ class Jogador:
         self._mesa_jogo.atualizar_interface()
 
     def calcular_pontuacao(self):
-        self.pontuacao = sum([sequencia.n_cartas*10 for sequencia in self.sequencias]) - self.mao.n_cartas * 10
+        soma_pontos = 0
+        for sequencia in self.sequencias:
+            soma_pontos += sequencia.n_cartas * 10
+        soma_pontos -= self.mao.n_cartas * 10
+        self.pontuacao = soma_pontos
 
     def comprar_carta(self):
         carta = self._monte.comprar_carta()

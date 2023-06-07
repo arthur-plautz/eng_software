@@ -6,7 +6,7 @@ class Mesa:
         self.height = height
         self.width = width
 
-    def _iniciar_interface(self):
+    def _inicializar_interface(self):
         self._frame = Frame(self.master)
         self._frame.pack()
 

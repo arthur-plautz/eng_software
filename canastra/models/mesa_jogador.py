@@ -16,10 +16,9 @@ class MesaJogador(Mesa):
     def iniciar_partida(self, mao):
         self.sequencias = []
         self.mao = Mao(mao)
-        self.iniciar_interface()
 
-    def iniciar_interface(self):
-        self._iniciar_interface()
+    def inicializar_interface(self):
+        self._inicializar_interface()
 
         self._canvas_pontuacao = Canvas(self._frame, width=self.width/3, height=self.height, bg="white")
         self._canvas_pontuacao.pack(side='right')
