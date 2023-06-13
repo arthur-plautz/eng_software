@@ -3,6 +3,7 @@ from models.mesa_jogo import MesaJogo
 from models.menu import MenuJogo
 from tkinter import *
 from tkinter import messagebox
+from datetime import datetime, timedelta
 from py_netgames_client.tkinter_client.PyNetgamesServerProxy import PyNetgamesServerProxy
 from py_netgames_client.tkinter_client.PyNetgamesServerListener import PyNetgamesServerListener
 
@@ -19,6 +20,7 @@ class InterfaceJogador(PyNetgamesServerListener):
 
         self.turno_local = None
         self.inicio_turno = None
+        self.tempo_inicial = None
         self.partida_andamento = False
 
         self.jogador = Jogador("Jogador")
@@ -38,15 +40,24 @@ class InterfaceJogador(PyNetgamesServerListener):
     def obter_estado(self):
         estado_jogador = self.jogador.obter_estado()
         estado_oponente = self.oponente.obter_estado()
+        estado_monte = self.mesa_jogo.monte.obter_estado()
+        estado_lixo = self.mesa_jogo.lixo.obter_estado()
+
         return dict(
             partida_andamento=self.partida_andamento,
-            monte=self.mesa_jogo.monte,
-            lixo=self.mesa_jogo.lixo,
+            monte=estado_monte,
+            lixo=estado_lixo,
             jogador=estado_jogador,
             oponente=estado_oponente
         )
 
     def atualizar_estado(self, estado):
+        self.partida_andamento = estado.get('partida_andamento')
+        self.mesa_jogo.lixo.atualizar_estado(estado.get('lixo'))
+        self.mesa_jogo.monte.atualizar_estado(estado.get('monte'))
+        self.jogador.atualizar_estado(estado.get('oponente'))
+        self.oponente.atualizar_estado(estado.get('jogador'))
+
         self.atualizar_interface()
 
     def enviar_jogada(self):
@@ -75,7 +86,16 @@ class InterfaceJogador(PyNetgamesServerListener):
         sair_button.pack()
 
     def definir_turno_inicial(self):
-        pass
+        limiar_decisao = timedelta(seconds=2)
+        tempo_inicializacao = datetime.now() - self.tempo_inicial
+        if tempo_inicializacao > limiar_decisao:
+            self.turno_local = True
+            self.jogador.nome = "Jogador 1"
+            self.oponente.nome = "Jogador 2"
+        else:
+            self.turno_local = False
+            self.jogador.nome = "Jogador 2"
+            self.oponente.nome = "Jogador 1"
 
     def definir_estado_inicial(self):
         if self.turno_local:
@@ -137,6 +157,7 @@ class InterfaceJogador(PyNetgamesServerListener):
 
     def send_match(self, amount_of_players=2):# Pyng use case "send match"
         messagebox.showinfo(message='Aguardando outro jogador')
+        self.tempo_inicial = datetime.now()
         self.server_proxy.send_match(amount_of_players)
 
     def receive_connection_success(self):# Pyng use case "receive connection"
@@ -155,12 +176,9 @@ class InterfaceJogador(PyNetgamesServerListener):
         self.set_match_id(match.match_id)
         self.partida_andamento = True
 
-        turno_inicial = self.definir_turno_inicial()
-        if not turno_inicial:
-            self.turno_local = False
+        self.definir_turno_inicial()
+        if not self.turno_local:
             messagebox.showinfo(message='Turno do Oponente')
-        else:
-            self.alterar_turno()
 
         mao, monte = self.definir_estado_inicial()
         self.mesa_jogo.iniciar_partida(monte)

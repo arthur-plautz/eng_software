@@ -4,6 +4,7 @@ from models.sequencia import Sequencia
 class Jogador:
     def __init__(self, nome):
         self.nome = nome
+        self.vencedor = False
         self.pontuacao = None
         self.mao = None
         self.sequencias = None
@@ -87,25 +88,14 @@ class Jogador:
         return sequencia
 
     def obter_estado(self):
-        mao = [
-            dict(
-                valor=carta.valor,
-                naipe=carta.naipe
-            ) for carta in self.mao.cartas
-        ]
-        sequencias = [
-            dict(
-                id=sequencia.id,
-                cartas=[
-                    dict(
-                        valor=carta.valor,
-                        naipe=carta.naipe
-                    ) for carta in sequencia.cartas
-                ]
-            ) for sequencia in self.sequencias
-        ]
+        sequencias = [sequencia.obter_estado() for sequencia in self.sequencias]
         return dict(
-            mao=mao,
+            mao=self.mao.obter_estado(),
             sequencias=sequencias,
             pontuacao=self.pontuacao
         )
+
+    def atualizar_estado(self, estado):
+        self.pontuacao = self.estado.get('pontuacao')
+        self.mao.atualizar(estado.get('mao'))
+        self.sequencias = [Sequencia(**sequencia) for sequencia in estado.get('sequencias')]

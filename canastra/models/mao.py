@@ -1,3 +1,4 @@
+from models.carta import Carta
 
 class Mao:
     def __init__(self, cartas) -> None:
@@ -12,3 +13,9 @@ class Mao:
     
     def adicionar_carta(self, carta):
         self.cartas.append(carta)
+
+    def obter_estado(self):
+        return [carta.serializacao for carta in self.cartas]
+
+    def atualizar_estado(self, estado):
+        self.cartas = [Carta(**carta) for carta in estado]

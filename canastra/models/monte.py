@@ -19,3 +19,9 @@ class Monte:
 
     def comprar_carta(self):
         return self.cartas.pop()
+
+    def obter_estado(self):
+        return [carta.serializacao for carta in self.cartas]
+
+    def atualizar_estado(self, estado):
+        self.cartas = [Carta(**carta) for carta in estado]

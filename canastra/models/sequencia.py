@@ -13,3 +13,9 @@ class Sequencia:
 
     def adicionar_carta(self, carta):
         self.cartas.append(carta)
+
+    def obter_estado(self):
+        return dict(
+            id=self.id,
+            cartas=[carta.serializacao for carta in self.cartas ]
+        )
