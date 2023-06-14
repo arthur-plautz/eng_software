@@ -24,7 +24,7 @@ class MesaJogo(Mesa):
 
         # Lixo
         x_lixo, y_lixo = self.width - 300, 30
-        if self.lixo.n_cartas > 0:
+        if not self.lixo.vazio():
             carta_lixo = self.lixo.cartas[0]
             self._canvas_mesa.create_image(x_lixo, y_lixo, anchor=NW, image=carta_lixo.photo)
         self._canvas_mesa.create_text(x_lixo, y_lixo-20, anchor=NW, text=f"Lixo: {self.lixo.n_cartas}")

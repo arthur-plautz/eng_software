@@ -17,6 +17,9 @@ class Monte:
     def n_cartas(self):
         return len(self.cartas)
 
+    def vazio(self):
+        return self.n_cartas > 0
+
     def comprar_carta(self):
         return self.cartas.pop()
 

@@ -8,6 +8,9 @@ class Mao:
     def n_cartas(self):
         return len(self.cartas)
 
+    def vazio(self):
+        return self.n_cartas > 0
+
     def remover_carta(self):
         return self.cartas.pop()
     
