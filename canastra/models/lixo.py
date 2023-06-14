@@ -1,24 +1,11 @@
-from models.carta import Carta
+from models.conjunto_cartas import ConjuntoCartas
 
-class Lixo:
-    def __init__(self) -> None:
-        self.cartas = []
-
-    @property
-    def n_cartas(self):
-        return len(self.cartas)
-
-    def vazio(self):
-        return self.n_cartas > 0
+class Lixo(ConjuntoCartas):
+    def __init__(self, cartas=[]):
+        super().__init__(cartas)
 
     def remover_carta(self):
-        return self.cartas.pop()
-    
+        return self._remover_carta()
+
     def adicionar_carta(self, carta):
         self.cartas = [carta] + self.cartas
-
-    def obter_estado(self):
-        return [carta.serializacao for carta in self.cartas]
-
-    def atualizar_estado(self, estado):
-        self.cartas = [Carta(**carta) for carta in estado] 

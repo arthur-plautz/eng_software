@@ -1,21 +1,17 @@
+from models.conjunto_cartas import ConjuntoCartas
 
-class Sequencia:
+class Sequencia(ConjuntoCartas):
     def __init__(self, id, cartas) -> None:
+        super().__init__(cartas)
         self.id = id
-        self.cartas = cartas
-    
-    @property
-    def n_cartas(self):
-        return len(self.cartas)
 
     def canastra(self):
         return self.n_cartas >= 7
 
     def adicionar_carta(self, carta):
-        self.cartas.append(carta)
+        self._adicionar_carta()
 
     def obter_estado(self):
-        return dict(
-            id=self.id,
-            cartas=[carta.serializacao for carta in self.cartas ]
-        )
+        estado = super().obter_estado()
+        estado['id'] = self.id
+        return estado
