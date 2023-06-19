@@ -1,14 +1,18 @@
 import random
-from models.carta import Carta
+from models.carta import Carta, POSICOES
 from models.conjunto_cartas import ConjuntoCartas
 
 class Monte(ConjuntoCartas):
     def inicializar(self, qtd=1):
-        naipes = ["Copas", "Ouros", "Paus", "Espadas"]
-        valores = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] * qtd
-        for naipe in naipes:
-            for valor in valores:
-                carta = Carta(naipe, valor)
+        naipes = ["Copas"]
+        valores = POSICOES * qtd
+        for valor in valores:
+            if valor != "Joker":
+                for naipe in naipes:
+                    carta = Carta(valor, naipe)
+                    self.cartas.append(carta)
+            else:
+                carta = Carta(valor)
                 self.cartas.append(carta)
         self.embaralhar()
 

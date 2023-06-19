@@ -3,9 +3,8 @@ from models.mao import Mao
 from tkinter import *
 
 class MesaJogador(Mesa):
-    def __init__(self, master, jogador, visivel):
+    def __init__(self, jogador, visivel):
         super().__init__(
-            master=master,
             height=350,
             width=1200
         )
@@ -16,9 +15,10 @@ class MesaJogador(Mesa):
     def iniciar_partida(self, mao):
         self.sequencias = []
         self.mao = Mao(mao)
+        return self.mao, self.sequencias
 
-    def inicializar_interface(self):
-        self._inicializar_interface()
+    def inicializar_interface(self, master):
+        self._inicializar_interface(master)
 
         self._canvas_pontuacao = Canvas(self._frame, width=self.width/3, height=self.height, bg="white")
         self._canvas_pontuacao.pack(side='right')
@@ -26,6 +26,10 @@ class MesaJogador(Mesa):
         self._canvas_pontuacao.create_text(10, 10, anchor=NW, text=f"Pontuação Total [{self.jogador}]:")
         self._canvas_pontuacao.create_text(10, 40, anchor=NW, text="0")
         self.atualizar_interface()
+
+    def atualizar_estado(self, mao, sequencias):
+        self.mao = mao
+        self.sequencias = sequencias
 
     def atualizar_pontuacao(self, pontuacao):
         self._canvas_pontuacao.delete(ALL)
@@ -47,9 +51,9 @@ class MesaJogador(Mesa):
         # Sequencias
         x_sequencias, y_sequencias = 10, 30
         i = 1
-        for sequencias in self.sequencias:
-            self._canvas_mesa.create_text(x_sequencias, y_sequencias-20, anchor=NW, text=f"C{i}")
-            for carta in sequencias.cartas:
+        for sequencia in self.sequencias:
+            self._canvas_mesa.create_text(x_sequencias, y_sequencias-20, anchor=NW, text=sequencia.id)
+            for carta in sequencia.cartas:
                 self._canvas_mesa.create_image(x_sequencias, y_sequencias, anchor=NW, image=carta.imagem)
                 y_sequencias += 20
             x_sequencias += 100
