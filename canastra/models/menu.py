@@ -8,17 +8,7 @@ class MenuJogo:
         self.width = width
 
         self.inicio_turno = None
-        self._habilitado = None
-
-    @property
-    def habilitado(self):
-        if not self._habilitado:
-            messagebox.showinfo(message="Turno do Oponente")
-        return self._habilitado
-
-    @habilitado.setter
-    def habilitado(self, habilitado):
-        self._habilitado = habilitado
+        self.habilitado = None
 
     @property
     def inicio_turno(self):
@@ -77,6 +67,8 @@ class MenuJogo:
                 comprar_button.grid(row=2, column=0, padx=5, pady=5, sticky="w")
             else:
                 messagebox.showinfo(message="Turno em fase principal. Você pode baixar ou descartar.")
+        else:
+            messagebox.showinfo(message="Turno do Oponente")
 
     def baixar(self):
         if self.habilitado:
@@ -117,6 +109,8 @@ class MenuJogo:
                 baixar_button.grid(row=4, column=0, padx=5, pady=5, sticky="w")
             else:
                 messagebox.showinfo(message="Turno em fase inicial. Você deve comprar.")
+        else:
+            messagebox.showinfo(message="Turno do Oponente")
 
     def descartar(self):
         if self.habilitado:
@@ -148,3 +142,5 @@ class MenuJogo:
                     self.finalizar_partida()
             else:
                 messagebox.showinfo(message="Turno em fase inicial. Você deve comprar.")
+        else:
+            messagebox.showinfo(message="Turno do Oponente")

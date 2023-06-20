@@ -64,6 +64,10 @@ class InterfaceJogador(PyNetgamesServerListener):
         else:
             self.finalizar_partida()
 
+    def enviar_desconectar(self):
+        messagebox.showinfo(message='Desconectando do Servidor')
+        self.master.destroy()
+
     def enviar_jogada(self):
         messagebox.showinfo(message='Turno do oponente')
         self.finalizar_turno()
@@ -91,7 +95,7 @@ class InterfaceJogador(PyNetgamesServerListener):
 
         label = Label(self._canvas_jogo, text="Canastra", font="Arial 40")
         partida_button = Button(self._canvas_jogo, text="Iniciar Partida", command=self.send_match)
-        sair_button = Button(self._canvas_jogo, text="Sair", command=self.master.destroy)
+        sair_button = Button(self._canvas_jogo, text="Sair", command=self.enviar_desconectar)
 
         label.pack()
         partida_button.pack()

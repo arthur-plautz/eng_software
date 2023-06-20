@@ -4,7 +4,7 @@ from models.conjunto_cartas import ConjuntoCartas
 
 class Monte(ConjuntoCartas):
     def inicializar(self, qtd=1):
-        naipes = ["Copas"]
+        naipes = ["Copas", "Paus", "Espadas", "Ouros"]
         valores = POSICOES * qtd
         for valor in valores:
             if valor != "Joker":
