@@ -1,4 +1,5 @@
 from models.conjunto_cartas import ConjuntoCartas
+from models.carta import Carta
 
 class Sequencia(ConjuntoCartas):
     def __init__(self, id=None, cartas=[]) -> None:
@@ -24,6 +25,14 @@ class Sequencia(ConjuntoCartas):
         for carta in self.cartas:
             if carta.valor == "Joker":
                 return self.cartas.remove(carta)
+
+    def gerar_copia(self):
+        seq_id = str(self.id)
+        seq_cartas = [Carta(**carta.serializacao) for carta in self.cartas]
+        return Sequencia(
+            id=seq_id,
+            cartas=seq_cartas
+        )
 
     def obter_estado(self):
         estado = super().obter_estado()

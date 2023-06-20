@@ -36,6 +36,9 @@ class Jogador:
         self.mesa.atualizar_interface()
         self._mesa_jogo.atualizar_interface()
 
+    def definir_vencedor(self):
+        self.vencedor = True
+
     def calcular_pontuacao(self):
         soma_pontos = 0
         for sequencia in self.sequencias:
@@ -123,9 +126,7 @@ class Jogador:
                 return None
         else:
             index_seq = self.obter_posicao_sequencia(destino)
-            seq = self.sequencias[index_seq]
-            cartas += [Carta(**carta.serializacao) for carta in seq.cartas]
-            sequencia = Sequencia(id=seq.id)
+            sequencia = self.sequencias[index_seq].gerar_copia()
             for carta in cartas:
                 sequencia.adicionar_carta(carta)
 

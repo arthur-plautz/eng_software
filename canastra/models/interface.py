@@ -72,10 +72,7 @@ class InterfaceJogador(PyNetgamesServerListener):
         messagebox.showinfo(message='Turno do oponente')
         self.finalizar_turno()
         estado = self.obter_estado()
-        self.server_proxy.send_move(
-            match_id=self.match_id,
-            payload=estado
-        )
+        self.server_proxy.send_move(match_id=self.match_id,payload=estado)
 
     def limpar_interface(self):
         if self.partida_andamento:
@@ -153,10 +150,10 @@ class InterfaceJogador(PyNetgamesServerListener):
 
         # Info
         if self.jogador.pontuacao > self.oponente.pontuacao:
-            self.jogador.vencedor = True
+            self.jogador.definir_vencedor()
             messagebox.showinfo(message=f"{self.jogador.nome} Venceu!")
         elif self.jogador.pontuacao < self.oponente.pontuacao:
-            self.oponente.vencedor = True
+            self.oponente.definir_vencedor()
             messagebox.showinfo(message=f"{self.oponente.nome} Venceu!")
         else:
             messagebox.showinfo(message=f"Empate!")
