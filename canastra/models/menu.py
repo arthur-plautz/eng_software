@@ -79,7 +79,8 @@ class MenuJogo:
                 # Selecionar Cartas
                 carta_label = Label(popup, text="Selecione as cartas a serem baixadas")
                 cartas_listbox = Listbox(popup, selectmode=MULTIPLE)
-                cartas_listbox.insert(END, *[carta.texto for carta in self.jogador.mao.cartas])
+                texto_cartas = [carta.texto for carta in self.jogador.mao.cartas]
+                cartas_listbox.insert(END, *texto_cartas)
                 def cartas_select(event):
                     selected = [cartas_listbox.get(idx) for idx in cartas_listbox.curselection()]
                     if selected:
@@ -89,7 +90,8 @@ class MenuJogo:
                 # Selecionar Destino
                 destino_label = Label(popup, text="Selecione o destino")
                 destino_listbox = Listbox(popup, selectmode=SINGLE)
-                destino_listbox.insert(END, "Mesa", *[seq.id for seq in self.jogador.sequencias])
+                texto_sequencias = [seq.id for seq in self.jogador.sequencias]
+                destino_listbox.insert(END, "Mesa", *texto_sequencias)
                 def destino_select(event):
                     selected = [destino_listbox.get(idx) for idx in destino_listbox.curselection()]
                     if selected:
@@ -122,7 +124,8 @@ class MenuJogo:
                     # Selecionar Cartas
                     label = Label(popup, text="Selecione carta a ser descartada")
                     cartas_listbox = Listbox(popup, selectmode=SINGLE)
-                    cartas_listbox.insert(END, *[carta.texto for carta in self.jogador.mao.cartas])
+                    texto_cartas = [carta.texto for carta in self.jogador.mao.cartas]
+                    cartas_listbox.insert(END, *texto_cartas)
                     def carta_select(event):
                         selected = [cartas_listbox.get(idx) for idx in cartas_listbox.curselection()]
                         self._dados_popup['texto_carta'] = selected[0]
